@@ -66,7 +66,7 @@ export async function POST(req: Request) {
         },
       });
     } catch (error: any) {
-      return new Response("Error creating user in database", { status: 400 });
+      return new Response("Error creating user in database", { status: 500 });
     }
   }
 
