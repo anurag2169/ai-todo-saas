@@ -10,10 +10,10 @@ export async function POST(req: Request) {
     throw new Error("please add webhook secret in env");
   }
 
-  const headerPayload = headers();
-  const svix_id = (await headerPayload).get("svix-id");
-  const svix_timestamp = (await headerPayload).get("svix-timestamp");
-  const svix_signature = (await headerPayload).get("svix-signature");
+  const headerPayload = await headers();
+  const svix_id = headerPayload.get("svix-id");
+  const svix_timestamp = headerPayload.get("svix-timestamp");
+  const svix_signature = headerPayload.get("svix-signature");
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
     return new Response("Error occurred -- no svix headers", {
@@ -41,32 +41,38 @@ export async function POST(req: Request) {
 
   // const { id } = evt.data;
   const eventType = evt.type;
-
   if (eventType === "user.created") {
     try {
       const { email_addresses, primary_email_address_id } = evt.data;
-
-      //   logs pratice
+      console.log(evt.data);
+      // Safely find the primary email address
       const primaryEmail = email_addresses.find(
         (email) => email.id === primary_email_address_id
       );
-
+      console.log("Primary email:", primaryEmail);
+      console.log("Email addresses:", primaryEmail?.email_address);
 
       if (!primaryEmail) {
-        return new Response("No Primary email found", { status: 400 });
+        console.error("No primary email found");
+        return new Response("No primary email found", { status: 400 });
       }
 
-      //   create a user in db
-
+      // Create the user in the database
       const newUser = await prisma.user.create({
         data: {
           id: evt.data.id!,
           email: primaryEmail.email_address,
-          isSubscribed: false,
+          isSubscribed: false, // Default setting
         },
       });
+      console.log("New user created:", newUser);
     } catch (error: any) {
-      return new Response("Error creating user in database", { status: 500 });
+      console.error(
+        "Error creating user in database:",
+        error.message,
+        error.stack
+      );
+      return new Response("Error creating user", { status: 500 });
     }
   }
 
