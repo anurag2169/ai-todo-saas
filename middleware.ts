@@ -1,23 +1,13 @@
-import {
-  clerkMiddleware,
-  createRouteMatcher,
-  clerkClient,
-} from "@clerk/nextjs/server";
+import { clerkMiddleware, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher([
-  "/api/webhook/register",
-  "/dashboard",
-  "/admin/dashboard",
-  "/subscribe",
-]);
+const publicRoutes = ["/", "/api/webhook/register", "/sign-in", "/sign-up"];
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
   const pathname = req.nextUrl.pathname;
 
-  // Handle unauthenticated users trying to access protected routes
-  if (!userId && isProtectedRoute(req)) {
+  if (!userId && !publicRoutes.includes(req.nextUrl.pathname)) {
     return NextResponse.redirect(new URL("/sign-in", req.url));
   }
 
@@ -38,7 +28,7 @@ export default clerkMiddleware(async (auth, req) => {
       }
 
       // Redirect authenticated users trying to access public routes
-      if (isProtectedRoute(req)) {
+      if (publicRoutes.includes(pathname)) {
         return NextResponse.redirect(
           new URL(role === "admin" ? "/admin/dashboard" : "/dashboard", req.url)
         );
