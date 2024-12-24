@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     });
   }
 
-  const { id } = evt.data;
+  // const { id } = evt.data;
   const eventType = evt.type;
 
   if (eventType === "user.created") {
@@ -51,8 +51,6 @@ export async function POST(req: Request) {
         (email) => email.id === primary_email_address_id
       );
 
-      console.log("Primary email:", primaryEmail);
-      console.log("Email addresses:", primaryEmail?.email_address);
 
       if (!primaryEmail) {
         return new Response("No Primary email found", { status: 400 });
@@ -67,8 +65,7 @@ export async function POST(req: Request) {
           isSubscribed: false,
         },
       });
-      console.log("new user Created ", newUser);
-    } catch (error) {
+    } catch (error: any) {
       return new Response("Error creating user in database", { status: 400 });
     }
   }

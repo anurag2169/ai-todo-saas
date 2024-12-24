@@ -64,7 +64,6 @@ export async function POST(req: NextRequest) {
     where: { id: userId },
     include: { todos: true },
   });
-  console.log("User:", user);
 
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
