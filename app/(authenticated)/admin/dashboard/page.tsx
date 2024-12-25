@@ -152,7 +152,7 @@ export default function AdminDashboard() {
         <CardContent>
           <form onSubmit={handleSearch} className="flex space-x-2">
             <Input
-              type="email"
+              type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter user email"
