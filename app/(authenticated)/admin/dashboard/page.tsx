@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/Pagination";
 import { useDebounceValue } from "usehooks-ts";
+import { useCopilotReadable } from "@copilotkit/react-core";
 
 interface UserWithTodos extends User {
   todos: Todo[];
@@ -22,6 +23,11 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  useCopilotReadable({
+    description: "Admin Dashboard page - search user data",
+    value: user,
+  });
 
   const fetchUserData = useCallback(
     async (page: number) => {
@@ -39,7 +45,7 @@ export default function AdminDashboard() {
           title: "Success",
           description: "User data fetched successfully.",
         });
-      } catch (error:any) {
+      } catch (error: any) {
         toast({
           title: "Error",
           description: "Failed to fetch user data. Please try again.",
@@ -83,7 +89,7 @@ export default function AdminDashboard() {
         title: "Success",
         description: "Subscription updated successfully.",
       });
-    } catch (error:any) {
+    } catch (error: any) {
       toast({
         title: "Error",
         description: "Failed to update subscription. Please try again.",
@@ -110,7 +116,7 @@ export default function AdminDashboard() {
       if (!response.ok) throw new Error("Failed to update todo");
       fetchUserData(currentPage);
       toast({ title: "Success", description: "Todo updated successfully." });
-    } catch (error:any) {
+    } catch (error: any) {
       toast({
         title: "Error",
         description: "Failed to update todo. Please try again.",
@@ -133,7 +139,7 @@ export default function AdminDashboard() {
       if (!response.ok) throw new Error("Failed to delete todo");
       fetchUserData(currentPage);
       toast({ title: "Success", description: "Todo deleted successfully." });
-    } catch (error:any) {
+    } catch (error: any) {
       toast({
         title: "Error",
         description: "Failed to delete todo. Please try again.",

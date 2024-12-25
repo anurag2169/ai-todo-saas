@@ -14,7 +14,6 @@ import { Pagination } from "@/components/Pagination";
 import Link from "next/link";
 import { useDebounceValue } from "usehooks-ts";
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
-import { CopilotPopup } from "@copilotkit/react-ui";
 
 export default function Dashboard() {
   const { user } = useUser();
@@ -25,8 +24,7 @@ export default function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm] = useDebounceValue(searchTerm, 300);
-
+  const [debouncedSearchTerm] = useDebounceValue(searchTerm, 200);
   // Define Copilot action
   useCopilotAction({
     name: "handleAddTodo",
@@ -85,6 +83,16 @@ export default function Dashboard() {
   useCopilotReadable({
     description: "The state of the todo list",
     value: JSON.stringify(todos),
+  });
+
+  useCopilotReadable({
+    description: "subscription status",
+    value: JSON.stringify(isSubscribed),
+  });
+  
+  useCopilotReadable({
+    description: "The current user",
+    value: JSON.stringify(user),
   });
 
   const fetchTodos = useCallback(

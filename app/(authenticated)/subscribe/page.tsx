@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle, AlertTriangle } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import { useToast } from "@/hooks/use-toast";
+import { useCopilotReadable } from "@copilotkit/react-core";
 
 export default function SubscribePage() {
   const router = useRouter();
@@ -15,6 +16,15 @@ export default function SubscribePage() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscriptionEnds, setSubscriptionEnds] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useCopilotReadable({
+    description: "Subscribe to the service",
+    value: isSubscribed,
+  });
+  useCopilotReadable({
+    description: "User Subscription ends details",
+    value: subscriptionEnds,
+  });
 
   const fetchSubscriptionStatus = useCallback(async () => {
     setIsLoading(true);
