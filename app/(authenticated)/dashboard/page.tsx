@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/Pagination";
 import Link from "next/link";
 import { useDebounceValue } from "usehooks-ts";
+import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
+import { CopilotPopup } from "@copilotkit/react-ui";
 
 export default function Dashboard() {
   const { user } = useUser();
@@ -24,6 +26,66 @@ export default function Dashboard() {
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 300);
+
+  // Define Copilot action
+  useCopilotAction({
+    name: "handleAddTodo",
+    description: "Add a new todo item",
+    parameters: [
+      {
+        name: "title",
+        type: "string",
+        description: "The title of the todo item",
+        required: true,
+      },
+    ],
+    handler: async ({ title }) => {
+      await handleAddTodo(title);
+    },
+  });
+
+  useCopilotAction({
+    name: "handleUpdateTodo",
+    description: "Update a todo item",
+    parameters: [
+      {
+        name: "id",
+        type: "string",
+        description: "The id of the todo item",
+        required: true,
+      },
+      {
+        name: "completed",
+        type: "boolean",
+        description: "The completed status of the todo item",
+        required: true,
+      },
+    ],
+    handler: async ({ id, completed }) => {
+      await handleUpdateTodo(id, completed);
+    },
+  });
+
+  useCopilotAction({
+    name: "handleDeleteTodo",
+    description: "Delete a todo item",
+    parameters: [
+      {
+        name: "id",
+        type: "string",
+        description: "The id of the todo item",
+        required: true,
+      },
+    ],
+    handler: async ({ id }) => {
+      await handleDeleteTodo(id);
+    },
+  });
+
+  useCopilotReadable({
+    description: "The state of the todo list",
+    value: JSON.stringify(todos),
+  });
 
   const fetchTodos = useCallback(
     async (page: number) => {
@@ -151,71 +213,73 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-3xl mb-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">
-        Welcome, {user?.emailAddresses[0].emailAddress}!
-      </h1>
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Add New Todo</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TodoForm onSubmit={(title) => handleAddTodo(title)} />
-        </CardContent>
-      </Card>
-      {!isSubscribed && todos.length >= 3 && (
-        <Alert variant="destructive" className="mb-8">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            You&apos;ve reached the maximum number of free todos.{" "}
-            <Link href="/subscribe" className="font-medium underline">
-              Subscribe now
-            </Link>{" "}
-            to add more.
-          </AlertDescription>
-        </Alert>
-      )}
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Todos</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Input
-            type="text"
-            placeholder="Search todos..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-4"
-          />
-          {isLoading ? (
-            <p className="text-center text-muted-foreground">
-              Loading your todos...
-            </p>
-          ) : todos.length === 0 ? (
-            <p className="text-center text-muted-foreground">
-              You don&apos;t have any todos yet. Add one above!
-            </p>
-          ) : (
-            <>
-              <ul className="space-y-4">
-                {todos.map((todo: Todo) => (
-                  <TodoItem
-                    key={todo.id}
-                    todo={todo}
-                    onUpdate={handleUpdateTodo}
-                    onDelete={handleDeleteTodo}
-                  />
-                ))}
-              </ul>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={(page) => fetchTodos(page)}
-              />
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+    <>
+      <div className="container mx-auto p-4 max-w-3xl mb-8">
+        <h1 className="text-lg md:text-3xl font-bold mb-8 text-center">
+          Welcome, {user?.emailAddresses[0].emailAddress}!
+        </h1>
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Add New Todo</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TodoForm onSubmit={(title) => handleAddTodo(title)} />
+          </CardContent>
+        </Card>
+        {!isSubscribed && todos.length >= 3 && (
+          <Alert variant="destructive" className="mb-8">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              You&apos;ve reached the maximum number of free todos.{" "}
+              <Link href="/subscribe" className="font-medium underline">
+                Subscribe now
+              </Link>{" "}
+              to add more.
+            </AlertDescription>
+          </Alert>
+        )}
+        <Card>
+          <CardHeader>
+            <CardTitle>Your Todos</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Input
+              type="text"
+              placeholder="Search todos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="mb-4"
+            />
+            {isLoading ? (
+              <p className="text-center text-muted-foreground">
+                Loading your todos...
+              </p>
+            ) : todos.length === 0 ? (
+              <p className="text-center text-muted-foreground">
+                You don&apos;t have any todos yet. Add one above!
+              </p>
+            ) : (
+              <>
+                <ul className="space-y-4">
+                  {todos.map((todo: Todo) => (
+                    <TodoItem
+                      key={todo.id}
+                      todo={todo}
+                      onUpdate={handleUpdateTodo}
+                      onDelete={handleDeleteTodo}
+                    />
+                  ))}
+                </ul>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={(page) => fetchTodos(page)}
+                />
+              </>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 }

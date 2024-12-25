@@ -3,6 +3,8 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
+import { CopilotKit } from "@copilotkit/react-core";
+import "@copilotkit/react-ui/styles.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,7 +12,6 @@ export const metadata: Metadata = {
   title: "Role Based Auth Clerk",
   description: "role based auth app using prisma and clerk",
 };
-
 export default function RootLayout({
   children,
 }: {
@@ -20,8 +21,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          {children}
-          <Toaster />
+          <CopilotKit runtimeUrl="/api/copilotkit">
+            {children}
+            <Toaster />
+          </CopilotKit>
         </body>
       </html>
     </ClerkProvider>
