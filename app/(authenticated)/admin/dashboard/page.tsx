@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useDebounceValue } from "usehooks-ts";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import dynamic from "next/dynamic";
+import { TodoList } from "@/components/bolt/todo-list";
 
 const TodoItem = dynamic(() => import("@/components/bolt/todo-item"), {
   loading: () => <p>Loading Todos...</p>,
@@ -215,20 +216,22 @@ export default function AdminDashboard() {
               <CardContent>
                 <ul className="space-y-4">
                   {user.todos.map((todo) => (
-                    <TodoItem
-                      key={todo.id}
-                      todo={todo}
-                      isAdmin={true}
-                      onToggle={handleUpdateTodo}
-                      onDelete={handleDeleteTodo}
-                      onEdit={function (
-                        id: string,
-                        newTitle: string,
-                        newDescription: string
-                      ): void {
-                        throw new Error("Function not implemented.");
-                      }}
-                    />
+                    <div key={todo.id} className="border p-4 rounded-xl shadow">
+                      <TodoItem
+                        key={todo.id}
+                        todo={todo}
+                        isAdmin={true}
+                        onToggle={handleUpdateTodo}
+                        onDelete={handleDeleteTodo}
+                        onEdit={function (
+                          id: string,
+                          newTitle: string,
+                          newDescription: string
+                        ): void {
+                          throw new Error("Function not implemented.");
+                        }}
+                      />
+                    </div>
                   ))}
                 </ul>
                 <Pagination

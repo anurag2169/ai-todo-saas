@@ -2,7 +2,7 @@ export function Testimonials() {
   const testimonials = [
     {
       content:
-        "Task Master has completely transformed how our team manages projects. It's intuitive and powerful.",
+        "IntelliDo has completely transformed how our team manages projects. It's intuitive and powerful.",
       author: "Sarah Johnson",
       role: "Product Manager",
     },

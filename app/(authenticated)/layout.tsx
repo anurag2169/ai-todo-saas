@@ -9,7 +9,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div
         style={
           {
-            "--copilot-kit-primary-color": "#222222",
+            "--copilot-kit-primary-color": "hsl(24.6 95% 53.1%)",
           } as CopilotKitCSSProperties
         }
         title="Copilot Popup Assistant"

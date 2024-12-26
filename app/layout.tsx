@@ -9,8 +9,9 @@ import "@copilotkit/react-ui/styles.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Role Based Auth Clerk",
-  description: "role based auth app using prisma and clerk",
+  title: "IntelliDo: AI Task Management",
+  description:
+    "IntelliDo: Your AI-powered to-do list. Smart task management, intelligent reminders, and seamless collaboration.",
 };
 export default function RootLayout({
   children,

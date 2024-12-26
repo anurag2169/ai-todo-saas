@@ -4,7 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCallback, useEffect, useState } from "react";
 import { Todo } from "@prisma/client";
 import { useUser } from "@clerk/nextjs";
-import { ClipboardList } from "lucide-react";
+import {Lightbulb } from "lucide-react";
 import { useDebounceValue } from "usehooks-ts";
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
 import { TodoTabs } from "@/components/bolt/todo-tabs";
@@ -249,10 +249,10 @@ export default function Dashboard() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
-              <ClipboardList className="h-12 w-12 text-primary" />
+              <Lightbulb className="h-12 w-12 text-primary" />
             </div>
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-              Task Master
+              IntelliDo
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
               Organize your tasks efficiently

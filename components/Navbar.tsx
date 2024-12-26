@@ -22,7 +22,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <span className="ml-2 text-xl font-bold">TodoMaster</span>
+              <span className="ml-2 text-xl font-bold">IntelliDo</span>
             </Link>
           </div>
           <div className="flex items-center">
@@ -36,7 +36,7 @@ export default function Navbar() {
                     <Avatar>
                       <AvatarImage src={user.imageUrl} alt="User avatar" />
                       <AvatarFallback>
-                        {user.firstName?.charAt(0) || "U"}
+                        {user.firstName?.charAt(0) || "T"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
