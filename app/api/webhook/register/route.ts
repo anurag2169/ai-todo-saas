@@ -44,13 +44,10 @@ export async function POST(req: Request) {
   if (eventType === "user.created") {
     try {
       const { email_addresses, primary_email_address_id } = evt.data;
-      console.log(evt.data);
       // Safely find the primary email address
       const primaryEmail = email_addresses.find(
         (email) => email.id === primary_email_address_id
       );
-      console.log("Primary email:", primaryEmail);
-      console.log("Email addresses:", primaryEmail?.email_address);
 
       if (!primaryEmail) {
         console.error("No primary email found");
@@ -65,7 +62,6 @@ export async function POST(req: Request) {
           isSubscribed: false, // Default setting
         },
       });
-      console.log("New user created:", newUser);
     } catch (error: any) {
       console.error(
         "Error creating user in database:",

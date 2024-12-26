@@ -2,14 +2,22 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { TodoItem } from "@/components/TodoItem";
 import { Todo, User } from "@prisma/client";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pagination } from "@/components/Pagination";
 import { useDebounceValue } from "usehooks-ts";
 import { useCopilotReadable } from "@copilotkit/react-core";
+import dynamic from "next/dynamic";
+
+const TodoItem = dynamic(() => import("@/components/bolt/todo-item"), {
+  loading: () => <p>Loading Todos...</p>,
+  ssr: false,
+});
+const Pagination = dynamic(() => import("@/components/bolt/pagination"), {
+  loading: () => <p>Loading Todos...</p>,
+  ssr: false,
+});
 
 interface UserWithTodos extends User {
   todos: Todo[];
@@ -211,8 +219,15 @@ export default function AdminDashboard() {
                       key={todo.id}
                       todo={todo}
                       isAdmin={true}
-                      onUpdate={handleUpdateTodo}
+                      onToggle={handleUpdateTodo}
                       onDelete={handleDeleteTodo}
+                      onEdit={function (
+                        id: string,
+                        newTitle: string,
+                        newDescription: string
+                      ): void {
+                        throw new Error("Function not implemented.");
+                      }}
                     />
                   ))}
                 </ul>

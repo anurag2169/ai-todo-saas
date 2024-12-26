@@ -45,10 +45,11 @@ export async function GET(req: NextRequest) {
       currentPage: page,
       totalPages,
     });
-  } catch (err) {
-    console.error("Error updating subscription:", err);
+  } catch (err: any) {
+    console.error("Error while fetching todos:", err, err.message, err.stack);
+
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", details: err.message },
       { status: 500 }
     );
   }
