@@ -3,10 +3,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TodoList } from "./todo-list";
 import { Todo } from "@prisma/client";
+import { SharedTodo } from "@/app/(authenticated)/dashboard/page";
 
 interface TodoTabsProps {
   todos: Todo[];
-  sharedTodos: Todo[];
+  sharedTodos: SharedTodo[];
   onToggle: (id: string, completed: boolean) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, newTitle: string, newDescription: string) => void;
@@ -39,7 +40,9 @@ export function TodoTabs({
       </TabsContent>
       <TabsContent value="shared-todos">
         <TodoList
-          todos={sharedTodos}
+          todos={
+            sharedTodos ? sharedTodos.map((sharedTodo) => sharedTodo.todo) : []
+          }
           onToggle={onToggle}
           onDelete={onDelete}
           onEdit={onEdit}

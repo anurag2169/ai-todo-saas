@@ -9,22 +9,33 @@ datasource db {
 }
 
 model User {
-  id               String    @id
-  email            String    @unique
-  isSubscribed     Boolean   @default(false)
+  id               String       @id
+  email            String       @unique
+  isSubscribed     Boolean      @default(false)
   subscriptionEnds DateTime?
   todos            Todo[]
+  SharedTodo       SharedTodo[]
 }
 
 model Todo {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   title       String
   description String?
-  completed   Boolean  @default(false)
+  completed   Boolean      @default(false)
   userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  user        User         @relation(fields: [userId], references: [id])
   sharedWith  String[]
   sharedBy    String?
+  sharedTodos SharedTodo[]
+}
+
+model SharedTodo {
+  id       String   @id @default(cuid())
+  todoId   String
+  todo     Todo     @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  sharedAt DateTime @default(now())
 }

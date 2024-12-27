@@ -78,6 +78,7 @@ export async function DELETE(
     await prisma.todo.delete({
       where: { id: todoId },
     });
+  
 
     return NextResponse.json({ message: "Todo deleted successfully" });
   } catch (error) {

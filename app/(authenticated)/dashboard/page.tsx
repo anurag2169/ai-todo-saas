@@ -4,11 +4,27 @@ import { useToast } from "@/hooks/use-toast";
 import { useCallback, useEffect, useState } from "react";
 import { Todo } from "@prisma/client";
 import { useUser } from "@clerk/nextjs";
-import {Lightbulb } from "lucide-react";
+import { Lightbulb, RefreshCwIcon } from "lucide-react";
 import { useDebounceValue } from "usehooks-ts";
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
 import { TodoTabs } from "@/components/bolt/todo-tabs";
 import { AddTodoForm } from "@/components/bolt/add-todo-form";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
+
+export interface SharedTodo {
+  id: string;
+  todoId: string;
+  userId: string;
+  sharedAt: string;
+  todo: Todo;
+}
 
 export default function Dashboard() {
   const { user } = useUser();
@@ -20,7 +36,7 @@ export default function Dashboard() {
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 200);
-  const [sharedTodos, setSharedTodos] = useState<Todo[]>([]);
+  const [sharedTodos, setSharedTodos] = useState<SharedTodo[]>([]);
   // Define Copilot action
   useCopilotAction({
     name: "handleAddTodo",
@@ -38,6 +54,28 @@ export default function Dashboard() {
     },
   });
 
+  useCopilotAction({
+    name: "shareTodo",
+    description: "Share a todo item with another user",
+    parameters: [
+      {
+        name: "id",
+        type: "string",
+        description: "The id of the todo item",
+        required: true,
+      },
+      {
+        name: "email",
+        type: "string",
+        description: "The email of the user to share the todo with",
+        required: true,
+      },
+    ],
+    handler: async ({ id, email }) => {
+      await shareTodo(id, email);
+    },
+  });
+  
   useCopilotAction({
     name: "handleUpdateTodo",
     description: "Update a todo item",
@@ -121,9 +159,33 @@ export default function Dashboard() {
     [toast, debouncedSearchTerm]
   );
 
+  async function fetchSharedTodos() {
+    try {
+      const response = await fetch(`/api/shareTodo`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch todos");
+      }
+      const data = await response.json();
+      setSharedTodos(data.sharedTodos);
+      toast({
+        title: "Success",
+        description: "Shared Todos fetched successfully.",
+      });
+    } catch (err: any) {
+      console.error("Failed to fetch shared todos:", err);
+      toast({
+        title: "Error",
+        description: "Failed to fetch Shared todos. Please try again.",
+        variant: "destructive",
+      });
+    }
+  }
+
   useEffect(() => {
     fetchTodos(1);
     fetchSubscriptionStatus();
+    fetchSharedTodos();
   }, [fetchTodos]);
 
   const fetchSubscriptionStatus = async () => {
@@ -203,6 +265,7 @@ export default function Dashboard() {
         throw new Error("Failed to delete todo");
       }
       await fetchTodos(currentPage);
+      await fetchSharedTodos();
       toast({
         title: "Success",
         description: "Todo deleted successfully.",
@@ -216,14 +279,36 @@ export default function Dashboard() {
     }
   };
 
-  const shareTodo = (id: string, email: string) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id
-          ? { ...todo, sharedWith: [...(todo.sharedWith || []), email] }
-          : todo
-      )
-    );
+  const shareTodo = async (id: string, email: string) => {
+    try {
+      const response = await fetch("/api/shareTodo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ todoId: id, recipientEmail: email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        return toast({
+          title: "Success",
+          description: "Todos Shared successfully.",
+        });
+      } else {
+        return toast({
+          title: "Uh oh! Something went wrong.",
+          description: data.message,
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: "Error",
+        description: "Failed to fetch todos. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const editTodo = (id: string, newTitle: string, newDescription: string) => {
@@ -243,6 +328,11 @@ export default function Dashboard() {
     );
   };
 
+  const handleRefresh = () => {
+    fetchTodos(currentPage);
+    fetchSharedTodos();
+  };
+
   return (
     <>
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8">
@@ -260,6 +350,24 @@ export default function Dashboard() {
           </div>
 
           <AddTodoForm onAdd={handleAddTodo} />
+
+          <div className="mt-8">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant={"outline"}>
+                    <RefreshCwIcon
+                      onClick={handleRefresh}
+                      className="h-8 w-8"
+                    />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="bg-white text-black">
+                  <p>Refresh Todos</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
 
           <div className="mt-8">
             <TodoTabs
