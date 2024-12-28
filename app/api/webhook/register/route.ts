@@ -43,7 +43,8 @@ export async function POST(req: Request) {
   const eventType = evt.type;
   if (eventType === "user.created") {
     try {
-      const { email_addresses, primary_email_address_id } = evt.data;
+      const { email_addresses, primary_email_address_id, first_name } =
+        evt.data;
       // Safely find the primary email address
       const primaryEmail = email_addresses.find(
         (email) => email.id === primary_email_address_id
@@ -59,6 +60,7 @@ export async function POST(req: Request) {
         data: {
           id: evt.data.id!,
           email: primaryEmail.email_address,
+          fullName: first_name,
           isSubscribed: false, // Default setting
         },
       });

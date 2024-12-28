@@ -16,7 +16,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 export interface SharedTodo {
   id: string;
@@ -48,9 +47,16 @@ export default function Dashboard() {
         description: "The title of the todo item",
         required: true,
       },
+
+      {
+        name: "description",
+        type: "string",
+        description: "The description of the todo item",
+        required: false,
+      },
     ],
-    handler: async ({ title }) => {
-      await handleAddTodo(title);
+    handler: async ({ title, description = "" }) => {
+      await handleAddTodo(title, description);
     },
   });
 
@@ -75,7 +81,7 @@ export default function Dashboard() {
       await shareTodo(id, email);
     },
   });
-  
+
   useCopilotAction({
     name: "handleUpdateTodo",
     description: "Update a todo item",
@@ -196,7 +202,7 @@ export default function Dashboard() {
     }
   };
 
-  const handleAddTodo = async (title: string) => {
+  const handleAddTodo = async (title: string, description: string) => {
     toast({
       title: "Adding Todo",
       description: "Please wait...",
@@ -205,7 +211,7 @@ export default function Dashboard() {
       const response = await fetch("/api/todos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title }),
+        body: JSON.stringify({ title, description }),
       });
       if (!response.ok) {
         throw new Error("Failed to add todo");
@@ -329,6 +335,7 @@ export default function Dashboard() {
   };
 
   const handleRefresh = () => {
+    console.log("Refreshing...");
     fetchTodos(currentPage);
     fetchSharedTodos();
   };
@@ -355,11 +362,8 @@ export default function Dashboard() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant={"outline"}>
-                    <RefreshCwIcon
-                      onClick={handleRefresh}
-                      className="h-8 w-8"
-                    />
+                  <Button variant={"outline"} onClick={handleRefresh}>
+                    <RefreshCwIcon className="h-8 w-8" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="left" className="bg-white text-black">

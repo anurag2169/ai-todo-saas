@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useUser, useClerk } from "@clerk/nextjs";
-import { LogOut, CreditCard } from "lucide-react";
+import { LogOut, CreditCard, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,12 +17,13 @@ export default function Navbar() {
   const { signOut } = useClerk();
 
   return (
-    <nav className="bg-background border-b">
+    <nav className="bg-background border-b fixed top-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link href="/" className="flex-shrink-0 flex items-center">
               <span className="ml-2 text-xl font-bold">IntelliDo</span>
+              <Lightbulb className="h-6 w-6 text-primary" />
             </Link>
           </div>
           <div className="flex items-center">

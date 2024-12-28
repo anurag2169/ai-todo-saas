@@ -80,10 +80,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { title } = await req.json();
+  const { title, description } = await req.json();
 
   const todo = await prisma.todo.create({
-    data: { title, userId },
+    data: { title, description, userId },
   });
 
   return NextResponse.json(todo, { status: 201 });

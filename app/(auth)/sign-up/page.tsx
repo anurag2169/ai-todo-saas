@@ -20,6 +20,7 @@ import Loader from "@/components/Loader";
 const SignUp = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
   const [emailAddress, setEmailAddress] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [password, setPassword] = useState("");
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
@@ -43,6 +44,7 @@ const SignUp = () => {
 
     try {
       await signUp.create({
+        firstName,
         emailAddress,
         password,
       });
@@ -93,12 +95,22 @@ const SignUp = () => {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center">
-              Sign Up for Todo Master
+              Sign Up for IntelliDo
             </CardTitle>
           </CardHeader>
           <CardContent>
             {!pendingVerification ? (
               <form onSubmit={submit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input
+                    type="text"
+                    id="name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                  />
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
