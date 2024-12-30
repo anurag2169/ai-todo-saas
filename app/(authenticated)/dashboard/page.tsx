@@ -321,25 +321,41 @@ export default function Dashboard() {
     }
   };
 
-  const editTodo = (id: string, newTitle: string, newDescription: string) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id
-          ? { ...todo, title: newTitle, description: newDescription }
-          : todo
-      )
-    );
-    setSharedTodos(
-      sharedTodos.map((todo) =>
-        todo.id === id
-          ? { ...todo, title: newTitle, description: newDescription }
-          : todo
-      )
-    );
+  const editTodo = async (
+    id: string,
+    newTitle: string,
+    newDescription: string
+  ) => {
+    toast({
+      title: "Updating Todo",
+      description: "Please wait...",
+    });
+
+    try {
+      const response = await fetch(`/api/todos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: newTitle, description: newDescription }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update todo");
+      }
+      await fetchTodos(currentPage);
+      await fetchSharedTodos();
+      toast({
+        title: "Success",
+        description: "Todo updated successfully.",
+      });
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: "Failed to update todo. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleRefresh = () => {
-    console.log("Refreshing...");
     fetchTodos(currentPage);
     fetchSharedTodos();
   };

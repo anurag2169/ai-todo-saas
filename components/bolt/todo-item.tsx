@@ -33,19 +33,9 @@ export default function TodoItem({
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editedTitle, setEditedTitle] = useState(todo.title);
-  const [editedDescription, setEditedDescription] = useState(
-    todo.description || ""
+  const [editedDescription, setEditedDescription] = useState<any | null>(
+    todo?.description
   );
-
-  const handleEdit = () => {
-    if (
-      editedTitle.trim() !== todo.title ||
-      editedDescription !== todo.description
-    ) {
-      onEdit(todo.id, editedTitle.trim(), editedDescription);
-    }
-    setIsEditing(false);
-  };
 
   const handleShare = (email: string) => {
     onShare?.(todo.id, email);
@@ -76,14 +66,21 @@ export default function TodoItem({
                 className="flex-1"
                 autoFocus
               />
-              <Textarea
+              <Input
                 value={editedDescription}
                 onChange={(e) => setEditedDescription(e.target.value)}
                 placeholder="Add description (optional)"
                 className="min-h-[80px]"
               />
               <div className="flex gap-2 justify-end">
-                <Button size="sm" variant="ghost" onClick={handleEdit}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    onEdit(todo.id, editedTitle, editedDescription);
+                    setIsEditing(false);
+                  }}
+                >
                   <Check className="h-4 w-4 mr-1" /> Save
                 </Button>
                 <Button
@@ -92,7 +89,7 @@ export default function TodoItem({
                   onClick={() => {
                     setIsEditing(false);
                     setEditedTitle(todo.title);
-                    setEditedDescription(todo.description || "");
+                    setEditedDescription(todo.description);
                   }}
                 >
                   <X className="h-4 w-4 mr-1" /> Cancel

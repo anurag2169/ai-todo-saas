@@ -17,22 +17,45 @@ export async function PUT(
   }
 
   try {
-    const { completed } = await request.json();
+    const { completed, title, description } = await request.json();
     const todoId = (await params).id;
 
     const todo = await prisma.todo.findUnique({
       where: { id: todoId },
     });
 
-    const sharedWithUsers = todo?.sharedWith;
-
     if (!todo) {
       return NextResponse.json({ error: "Todo not found" }, { status: 404 });
     }
 
+    const updatedData: {
+      completed?: boolean;
+      title?: string;
+      description?: string;
+    } = {};
+
+    if (completed !== undefined) {
+      updatedData.completed = completed;
+    }
+
+    if (userId === todo.userId) {
+      if (title !== undefined && title.trim() !== "") {
+        updatedData.title = title;
+      }
+
+      if (description !== undefined && description.trim() !== "") {
+        updatedData.description = description;
+      }
+    } else if (title || description) {
+      return NextResponse.json(
+        { error: "You are not authorized to update title or description" },
+        { status: 403 }
+      );
+    }
+
     const updatedTodo = await prisma.todo.update({
       where: { id: todoId },
-      data: { completed },
+      data: updatedData,
     });
 
     return NextResponse.json(updatedTodo);
@@ -85,3 +108,12 @@ export async function DELETE(
     );
   }
 }
+
+export async function updateTodoContent(
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>;
+  }
+) {}
