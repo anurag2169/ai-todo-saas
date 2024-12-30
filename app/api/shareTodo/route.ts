@@ -108,6 +108,7 @@ export async function GET(req: NextRequest) {
     const sharedTodos = await prisma.sharedTodo.findMany({
       where: { userId },
       include: { todo: true },
+      orderBy: { sharedAt: "desc" },
     });
 
     if (!sharedTodos || sharedTodos.length === 0) {

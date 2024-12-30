@@ -5,6 +5,7 @@ import { Montserrat } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { CopilotKit } from "@copilotkit/react-core";
 import "@copilotkit/react-ui/styles.css";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -22,10 +23,17 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={montserrat.className}>
-          <CopilotKit runtimeUrl="/api/copilotkit">
-            {children}
-            <Toaster />
-          </CopilotKit>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <CopilotKit runtimeUrl="/api/copilotkit">
+              {children}
+              <Toaster />
+            </CopilotKit>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

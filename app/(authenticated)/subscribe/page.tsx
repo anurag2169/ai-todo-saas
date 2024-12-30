@@ -94,8 +94,7 @@ export default function SubscribePage() {
         </CardHeader>
         <CardContent>
           {isSubscribed ? (
-            <Alert>
-              <CheckCircle className="h-4 w-4" />
+            <Alert variant="default">
               <AlertDescription>
                 You are a subscribed user. Subscription ends on{" "}
                 {new Date(subscriptionEnds!).toLocaleDateString()}
@@ -104,7 +103,6 @@ export default function SubscribePage() {
           ) : (
             <>
               <Alert variant="destructive">
-                <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>
                   You are not currently subscribed. Subscribe now to unlock all
                   features!

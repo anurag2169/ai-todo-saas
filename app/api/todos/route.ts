@@ -23,6 +23,10 @@ export async function GET(req: NextRequest) {
           contains: search,
           mode: "insensitive",
         },
+        description: {
+          contains: search,
+          mode: "insensitive",
+        },
       },
       orderBy: { createdAt: "desc" },
       take: ITEMS_PER_PAGE,

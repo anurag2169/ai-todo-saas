@@ -11,13 +11,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { ThemeModeToggle } from "./themeToggle";
 
 export default function Navbar() {
   const { user } = useUser();
   const { signOut } = useClerk();
 
   return (
-    <nav className="bg-background border-b fixed top-0 w-full z-50">
+    <nav className="bg-background border-b fixed top-0 w-full z-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
@@ -26,7 +27,8 @@ export default function Navbar() {
               <Lightbulb className="h-6 w-6 text-primary" />
             </Link>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-x-4">
+            <ThemeModeToggle />
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

@@ -4,7 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCallback, useEffect, useState } from "react";
 import { Todo } from "@prisma/client";
 import { useUser } from "@clerk/nextjs";
-import { Lightbulb, RefreshCwIcon } from "lucide-react";
+import { AlertTriangle, Lightbulb, RefreshCwIcon } from "lucide-react";
 import { useDebounceValue } from "usehooks-ts";
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
 import { TodoTabs } from "@/components/bolt/todo-tabs";
@@ -16,6 +16,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
 
 export interface SharedTodo {
   id: string;
@@ -245,6 +248,7 @@ export default function Dashboard() {
         throw new Error("Failed to update todo");
       }
       await fetchTodos(currentPage);
+      await fetchSharedTodos();
       toast({
         title: "Success",
         description: "Todo updated successfully.",
@@ -358,7 +362,26 @@ export default function Dashboard() {
 
           <AddTodoForm onAdd={handleAddTodo} />
 
-          <div className="mt-8">
+          {!isSubscribed && todos.length >= 3 && (
+            <Alert variant="destructive" className="my-8">
+              <AlertDescription>
+                You&apos;ve reached the maximum number of free todos.{" "}
+                <Link href="/subscribe" className="font-medium underline">
+                  Subscribe now
+                </Link>{" "}
+                to add more.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <div className="mt-8 flex justify-between gap-x-4">
+            <Input
+              type="text"
+              placeholder="Search todos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="mb-4"
+            />
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>

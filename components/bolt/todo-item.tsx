@@ -155,7 +155,7 @@ export default function TodoItem({
                       : "text-gray-600"
                   }`}
                 >
-                  {truncateText(todo.description, 100)}
+                  {truncateText(todo.description, 60)}
                 </p>
               )}
 
@@ -165,22 +165,25 @@ export default function TodoItem({
                 </span>
                 <div className="flex gap-1">
                   {showShareButton && onShare && (
-                    <ShareTodoDialog onShare={handleShare} />
+                    <>
+                      <ShareTodoDialog onShare={handleShare} />
+
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => setIsEditing(true)}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => onDelete(todo.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </>
                   )}
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => onDelete(todo.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
                 </div>
               </div>
             </div>

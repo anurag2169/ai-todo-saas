@@ -24,12 +24,10 @@ export async function PUT(
       where: { id: todoId },
     });
 
+    const sharedWithUsers = todo?.sharedWith;
+
     if (!todo) {
       return NextResponse.json({ error: "Todo not found" }, { status: 404 });
-    }
-
-    if (todo.userId !== userId) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const updatedTodo = await prisma.todo.update({
@@ -78,7 +76,6 @@ export async function DELETE(
     await prisma.todo.delete({
       where: { id: todoId },
     });
-  
 
     return NextResponse.json({ message: "Todo deleted successfully" });
   } catch (error) {
