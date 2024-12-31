@@ -9,6 +9,7 @@ import Pagination from "./pagination";
 interface TodoListProps {
   todos: Todo[];
   onToggle: (id: string, completed: boolean) => void;
+  onPinned: (id: string, pinned: boolean) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, newTitle: string, newDescription: string) => void;
   onShare?: (id: string, email: string) => void;
@@ -18,6 +19,7 @@ interface TodoListProps {
 export function TodoList({
   todos,
   onToggle,
+  onPinned,
   onDelete,
   onEdit,
   onShare,
@@ -40,6 +42,7 @@ export function TodoList({
       <TodoGrid
         todos={currentTodos}
         onToggle={onToggle}
+        onPinned={onPinned}
         onDelete={onDelete}
         onEdit={onEdit}
         onShare={onShare}

@@ -28,7 +28,11 @@ export async function GET(req: NextRequest) {
           mode: "insensitive",
         },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { pinned: "desc" },
+        { completed: "desc" },
+        { createdAt: "desc" },
+      ],
       take: ITEMS_PER_PAGE,
       skip: (page - 1) * ITEMS_PER_PAGE,
     });

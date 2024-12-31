@@ -261,6 +261,34 @@ export default function Dashboard() {
       });
     }
   };
+  const handlePinnedTodo = async (id: string, pinned: boolean) => {
+    toast({
+      title: "Pinning Todo",
+      description: "Please wait...",
+    });
+    try {
+      const response = await fetch(`/api/todos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pinned }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to Pinned todo");
+      }
+      await fetchTodos(currentPage);
+      await fetchSharedTodos();
+      toast({
+        title: "Success",
+        description: "Todo Pinned successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to Pinned todo. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleDeleteTodo = async (id: string) => {
     toast({
@@ -417,6 +445,7 @@ export default function Dashboard() {
               todos={todos}
               sharedTodos={sharedTodos}
               onToggle={handleUpdateTodo}
+              onPinned={handlePinnedTodo}
               onDelete={handleDeleteTodo}
               onEdit={editTodo}
               onShare={shareTodo}

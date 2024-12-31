@@ -17,7 +17,7 @@ export async function PUT(
   }
 
   try {
-    const { completed, title, description } = await request.json();
+    const { completed, title, description, pinned } = await request.json();
     const todoId = (await params).id;
 
     const todo = await prisma.todo.findUnique({
@@ -30,12 +30,19 @@ export async function PUT(
 
     const updatedData: {
       completed?: boolean;
+      pinned?: boolean;
       title?: string;
       description?: string;
-    } = {};
+      updatedAt?: Date;
+    } = {
+      updatedAt: new Date(),
+    };
 
     if (completed !== undefined) {
       updatedData.completed = completed;
+    }
+    if (pinned !== undefined) {
+      updatedData.pinned = pinned;
     }
 
     if (userId === todo.userId) {
@@ -108,5 +115,3 @@ export async function DELETE(
     );
   }
 }
-
-

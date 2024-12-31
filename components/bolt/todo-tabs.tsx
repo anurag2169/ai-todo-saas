@@ -9,6 +9,7 @@ interface TodoTabsProps {
   todos: Todo[];
   sharedTodos: SharedTodo[];
   onToggle: (id: string, completed: boolean) => void;
+  onPinned: (id: string, pinned: boolean) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, newTitle: string, newDescription: string) => void;
   onShare: (id: string, email: string) => void;
@@ -18,6 +19,7 @@ export function TodoTabs({
   todos,
   sharedTodos,
   onToggle,
+  onPinned,
   onDelete,
   onEdit,
   onShare,
@@ -32,6 +34,7 @@ export function TodoTabs({
         <TodoList
           todos={todos}
           onToggle={onToggle}
+          onPinned={onPinned}
           onDelete={onDelete}
           onEdit={onEdit}
           onShare={onShare}
@@ -44,6 +47,7 @@ export function TodoTabs({
             sharedTodos ? sharedTodos.map((sharedTodo) => sharedTodo.todo) : []
           }
           onToggle={onToggle}
+          onPinned={onPinned}
           onDelete={onDelete}
           onEdit={onEdit}
           onShare={onShare}

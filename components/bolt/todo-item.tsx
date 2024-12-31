@@ -5,7 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Edit2, Trash2, X, Check, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Edit2,
+  Trash2,
+  X,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  PinIcon,
+  PinOffIcon,
+} from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ShareTodoDialog } from "./share-todo-dialog";
@@ -14,6 +23,7 @@ import { Todo } from "@prisma/client";
 interface TodoItemProps {
   todo: Todo;
   onToggle: (id: string, completed: boolean) => void;
+  onPinned: (id: string, pinned: boolean) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, newTitle: string, newDescription: string) => void;
   onShare?: (id: string, email: string) => void;
@@ -24,6 +34,7 @@ interface TodoItemProps {
 export default function TodoItem({
   todo,
   onToggle,
+  onPinned,
   onDelete,
   onEdit,
   onShare,
@@ -181,6 +192,17 @@ export default function TodoItem({
                       </Button>
                     </>
                   )}
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => onPinned(todo.id, !todo.pinned)}
+                  >
+                    {todo.pinned ? (
+                      <PinOffIcon className="h-4 w-4" />
+                    ) : (
+                      <PinIcon className="h-4 w-4" />
+                    )}
+                  </Button>
                 </div>
               </div>
             </div>
