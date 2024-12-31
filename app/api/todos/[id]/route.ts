@@ -109,11 +109,4 @@ export async function DELETE(
   }
 }
 
-export async function updateTodoContent(
-  request: NextRequest,
-  {
-    params,
-  }: {
-    params: Promise<{ id: string }>;
-  }
-) {}
+
