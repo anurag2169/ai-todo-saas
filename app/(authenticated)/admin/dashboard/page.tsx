@@ -156,6 +156,9 @@ export default function AdminDashboard() {
       });
     }
   };
+  const handlePinnedTodo = () => {
+    console.log("pinned todo");
+  };
 
   return (
     <div className="container mx-auto p-4 max-w-3xl mb-8">
@@ -222,6 +225,7 @@ export default function AdminDashboard() {
                         todo={todo}
                         isAdmin={true}
                         onToggle={handleUpdateTodo}
+                        onPinned={handlePinnedTodo}
                         onDelete={handleDeleteTodo}
                         onEdit={function (
                           id: string,
